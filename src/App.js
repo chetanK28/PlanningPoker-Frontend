@@ -5,7 +5,7 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
 
-const socket = io("http://10.77.161.113:3001");
+const socket = io(process.env.REACT_APP_SOCKET_URL || "http://localhost:3001");
 
 const copyToClipboard = (text) => {
   if (navigator.clipboard?.writeText) {
@@ -19,6 +19,13 @@ const copyToClipboard = (text) => {
     document.body.removeChild(textarea);
   }
 };
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
