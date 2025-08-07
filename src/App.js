@@ -5,7 +5,7 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
 
-const socket = io(process.env.REACT_APP_SOCKET_URL);
+const socket = io("http://10.77.161.113:3001");
 
 const copyToClipboard = (text) => {
   if (navigator.clipboard?.writeText) {
