@@ -5,7 +5,7 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
 
-const socket = io("http://10.77.161.113:3001");
+const socket = io("http://192.168.1.206:3001");
 
 
 const copyToClipboard = (text) => {
