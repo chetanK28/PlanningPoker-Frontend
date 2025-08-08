@@ -5,7 +5,10 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
 
-const socket = io(process.env.REACT_APP_SOCKET_URL || "http://localhost:3001");
+const socket = io("https://planningpoker-backend-dzefd9bbf6bza6c3.centralindia-01.azurewebsites.net", {
+  transports: ["websocket"],
+  withCredentials: true
+});
 
 const copyToClipboard = (text) => {
   if (navigator.clipboard?.writeText) {
