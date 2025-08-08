@@ -5,11 +5,8 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
 
-const API_URL = import.meta.env.VITE_API_URL;
-const socket = io(API_URL, {
-  transports: ["websocket"],
-  withCredentials: true,
-});
+const socket = io("http://10.77.161.113:3001");
+
 
 const copyToClipboard = (text) => {
   if (navigator.clipboard?.writeText) {
