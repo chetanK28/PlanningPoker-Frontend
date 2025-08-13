@@ -5,18 +5,22 @@ import VoteButtons from "./components/VoteButtons";
 import UserCircle from "./components/UserCircle";
 import TitleDescription from "./components/TitleDescription";
  
-const DEFAULT_PORT = 3001;
-const isStandardPort = (p) => p === "" || p === "80" || p === "443";
-const pageProtocol = window.location.protocol;
-const pageHost = window.location.hostname;
- 
+/**
+ * Option B (separate FE + BE):
+ * 1) In production, set VITE_SOCKET_URL in SWA to your backend URL.
+ * 2) Fallback (below) hardcodes your backend URL so it works even if env isn't set.
+ * 3) For local dev, it falls back to http://localhost:3001 if you're on localhost.
+ */
 const envSocket =
   typeof import.meta !== "undefined" && import.meta.env?.VITE_SOCKET_URL;
-const SOCKET_URL =
-  envSocket ||
-  (!isStandardPort(window.location.port)
-    ? `${pageProtocol}//${pageHost}:${DEFAULT_PORT}`
-    : `${pageProtocol}//${window.location.host}`);
+ 
+const PROD_BACKEND = "https://planningpoker-backend-dzefd9bbf6bza6c3.centralindia-01.azurewebsites.net";
+ 
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+ 
+const SOCKET_URL = envSocket || (isLocal ? "http://localhost:3001" : PROD_BACKEND);
  
 const socket = io(SOCKET_URL, {
   transports: ["websocket", "polling"],
@@ -47,13 +51,9 @@ const copyToClipboard = (text) => {
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [roomId, setRoomId] = useState(searchParams.get("room") || "");
-  const [roomName, setRoomName] = useState(
-    localStorage.getItem("roomName") || ""
-  );
+  const [roomName, setRoomName] = useState(localStorage.getItem("roomName") || "");
   const [username, setUsername] = useState("");
-  const [inputUsername, setInputUsername] = useState(
-    localStorage.getItem("username") || ""
-  );
+  const [inputUsername, setInputUsername] = useState(localStorage.getItem("username") || "");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [joined, setJoined] = useState(false);
   const [users, setUsers] = useState([]);
@@ -115,9 +115,7 @@ const App = () => {
   }, []);
  
   const calculateAverage = (votes) => {
-    const numericVotes = Object.values(votes)
-      .filter((v) => !isNaN(v))
-      .map(Number);
+    const numericVotes = Object.values(votes).filter((v) => !isNaN(v)).map(Number);
     if (numericVotes.length > 0) {
       const avg = numericVotes.reduce((a, b) => a + b, 0) / numericVotes.length;
       setAverage(avg.toFixed(2));
@@ -219,9 +217,7 @@ const App = () => {
           <button
             className="mt-4 w-full p-3 bg-green-500 text-white rounded hover:bg-green-600"
             onClick={() => {
-              const newRoomId = `room-${Math.random()
-                .toString(36)
-                .substr(2, 8)}`;
+              const newRoomId = `room-${Math.random().toString(36).substr(2, 8)}`;
               setRoomId(newRoomId);
               setSearchParams({ room: newRoomId });
               setRole("scrumMaster");
